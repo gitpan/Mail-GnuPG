@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use GnuPG::Interface;
 use IO::Handle;
@@ -280,6 +280,7 @@ my $key_cache_age = 0;
 my $key_cache_expire = 60*60*30; # 30 minutes
 
 sub _rebuild_key_cache {
+  my $self = shift;
   local $_;
   %key_cache = ();
   # sometimes the best tool for the job... is not perl
