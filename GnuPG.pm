@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use GnuPG::Interface;
 use IO::Handle;
@@ -582,6 +582,11 @@ GNU General Public License or the Artistic License for more details.
 =head1 AUTHOR
 
 Robert Spier
+
+=head1 BUGS/ISSUES/PATCHES
+
+Please send all bugs/issues/patches to
+    bug-Mail-GnuPG@rt.cpan.org
 
 =head1 SEE ALSO
 
