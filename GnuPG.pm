@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use GnuPG::Interface;
 use File::Spec;
@@ -575,7 +575,8 @@ sub mime_sign {
 #  print STDERR $plaintext;
 #  print "<----\n";
   $input->flush();
-  $input->sync();
+  eval { $input->sync() };      # IO::Handle::sync not implemented on
+                                # all systems.
   close $input;
 
   my @signature    = <$output>;   # reading the output
