@@ -8,7 +8,7 @@ Mail::GnuPG - Process email with GPG.
 
   use Mail::GnuPG;
   my $mg = new Mail::GnuPG( key => 'ABCDEFGH' );
-  $ret = $mg->mime_sign( $MIMEObj, "you@my.dom" );
+  $ret = $mg->mime_sign( $MIMEObj, 'you@my.dom' );
 
 =head1 DESCRIPTION
 
@@ -21,12 +21,13 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use GnuPG::Interface;
+use File::Spec;
+use File::Temp;
 use IO::Handle;
 use MIME::Entity;
-use File::Temp;
 use MIME::Parser;
 use Mail::Address;
 
@@ -88,7 +89,21 @@ sub _set_options {
   format, or just a single part ascii armored message.
 
  Output:
-  Exit code of gpg.  (0 on success)
+  On Failure:
+    Exit code of gpg.  (0 on success)
+
+  On Success: (just encrypted)
+    (0, undef, undef)
+
+  On success: (signed and encrypted)
+    ( 0,
+      keyid,           # ABCDDCBA
+      emailaddress     # Foo Bar <foo@bar.com>
+    )
+
+   where the keyid is the key that signed it, and emailaddress is full
+   name and email address of the primary uid
+
 
   $self->{last_message} => any errors from gpg
   $self->{plaintext}    => plaintext output from gpg
@@ -186,7 +201,20 @@ sub decrypt {
   my $entity = $parser->parse_data(\@plaintext);
   $self->{decrypted} = $entity;
 
-  return $exit_value;
+  return $exit_value if $exit_value; # failure
+
+  # if the message was signed and encrypted, extract the signature
+  # information and return it.  In some theory or another, you can't
+  # trust an unsigned encrypted message is from who it says signed it.
+  # (Although I think it would have to go hand in hand at some point.)
+
+  # FIXME: these regex are likely to break under non english locales.
+  my $result = join "", @error_output;
+  my ($keyid)  = $result =~ /using \S+ key ID (.+)$/m;
+  my ($pemail) = $result =~ /Good signature from "(.+)"$/m;
+
+  return ($exit_value,$keyid,$pemail);
+
 }
 
 =head2 get_decrypt_key
@@ -290,7 +318,10 @@ sub get_decrypt_key {
   return if not $key;
 
   # get mail address of this key
-  my $gpg_out = qx[ gpg --with-colons --list-keys $key 2>&1 ];
+  die "Invalid Key Format: $key" unless $key =~ /^[0-9A-F]+$/i;
+  my $cmd = $self->{gpg_path} . " --with-colons --list-keys $key 2>&1";
+  my $gpg_out = qx[ $cmd ];
+  ## FIXME: this should probably use open| instead.
   die "Couldn't find key $key in keyring" if $gpg_out !~ /\S/ or $?;
   my $mail = (split(":", $gpg_out))[9];
 
@@ -308,7 +339,16 @@ sub get_decrypt_key {
   format, or just a single part ascii armored message.
 
  Output:
-  Exit code of gpg.  (0 on success)
+  On error:
+    Exit code of gpg.  (0 on success)
+  On success
+    ( 0,
+      keyid,           # ABCDDCBA
+      emailaddress     # Foo Bar <foo@bar.com>
+    )
+
+   where the keyid is the key that signed it, and emailaddress is full
+   name and email address of the primary uid
 
   $self->{last_message} => any errors from gpg
 
@@ -359,6 +399,7 @@ sub verify {
 
   my ($sigfh, $sigfile)
     = File::Temp::tempfile('mgsXXXXXXXX',
+			   DIR => File::Spec->tmpdir,
 			   UNLINK => 1,
 			  );
   print $sigfh $sigtext;
@@ -366,6 +407,7 @@ sub verify {
 
   my ($datafh, $datafile) =
     File::Temp::tempfile('mgdXXXXXX',
+			 DIR => File::Spec->tmpdir,
 			 UNLINK => 1,
 			);
 
@@ -399,11 +441,19 @@ sub verify {
 
   $self->{last_message} = [@result];
 
-  return $exit_value;
+  return $exit_value if $exit_value; # failure
+
+  # FIXME: these regex are likely to break under non english locales.
+  my $result = join "", @result;
+  my ($keyid)  = $result =~ /using \S+ key ID (.+)$/m;
+  my ($pemail) = $result =~ /Good signature from "(.+)"$/m;
+
+  return ($exit_value,$keyid,$pemail);
+
 }
 
 # Should this go elsewhere?  The Key handling stuff doesn't seem to
-# make sense in a Mail:: module
+# make sense in a Mail:: module.  
 my %key_cache;
 my $key_cache_age = 0;
 my $key_cache_expire = 60*60*30; # 30 minutes
@@ -801,7 +851,7 @@ sub _mime_encrypt {
     if ($sign) {
       $gnupg->sign_and_encrypt( handles => $handles );
     } else {
-      $gnupg->sign_encrypt( handles => $handles );
+      $gnupg->encrypt( handles => $handles );
     }
   };
 
@@ -861,6 +911,53 @@ sub _mime_encrypt {
 
   $exit_value;
 }
+
+=head2 is_signed
+
+  best guess as to whether a message is signed or not (by looking at
+  the mime type and message content)
+
+ Input:
+   MIME::Entity containing email message to test
+
+ Output:
+  True or False value
+
+=head2 is_encrypted
+
+  best guess as to whether a message is signed or not (by looking at
+  the mime type and message content)
+
+ Input:
+   MIME::Entity containing email message to test
+
+ Output:
+  True or False value
+
+=cut
+
+sub is_signed {
+  my ($self,$entity) = @_;
+  return 1
+    if (($entity->effective_type =~ m!multipart/signed!)
+	||
+	($entity->as_string =~ m!^-----BEGIN PGP SIGNED MESSAGE-----!m));
+  return 0;
+}
+
+sub is_encrypted {
+  my ($self,$entity) = @_;
+  return 1
+    if (($entity->effective_type =~ m!multipart/encrypted!)
+	||
+	($entity->as_string =~ m!^-----BEGIN PGP MESSAGE-----!m));
+  return 0;
+}
+
+# FIXME: there's no reason why is_signed and is_encrypted couldn't be
+# static (class) methods, so maybe we should support that.
+
+# FIXME: will we properly deal with signed+encrypted stuff?  probably not.
 
 # Autoload methods go after =cut, and are processed by the autosplit program.
 
