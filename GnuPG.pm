@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 
 use GnuPG::Interface;
 use File::Spec;
@@ -181,8 +181,13 @@ sub decrypt {
   close $error;
   close $status_fh;
 
-  waitpid $pid, 0;  # clean up the finished GnuPG process
-  my $exit_value  = $? >> 8;
+  waitpid $pid, 0;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
+  
+
 
   $self->{last_message} = \@error_output;
   $self->{plaintext}    = \@plaintext;
@@ -294,7 +299,12 @@ sub get_decrypt_key {
 
   # clean up the finished GnuPG process
   waitpid $pid, 0;
-  my $exit_value  = $? >> 8;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
+  
+
 
   # set last_message
   $self->{last_message} = \@result;
@@ -437,7 +447,10 @@ sub verify {
   unlink $sigfile, $datafile;
 
   waitpid $pid, 0;
-  my $exit_value  = $? >> 8;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
 
   $self->{last_message} = [@result];
 
@@ -447,6 +460,7 @@ sub verify {
   my $result = join "", @result;
   my ($keyid)  = $result =~ /using \S+ key ID (.+)$/m;
   my ($pemail) = $result =~ /Good signature from "(.+)"$/m;
+
 
   return ($exit_value,$keyid,$pemail);
 
@@ -528,7 +542,7 @@ sub mime_sign {
   $entity->make_multipart;
   my $workingentity = $entity;
   if ($entity->parts > 1) {
-    $workingentity = MIME::Entity->build(Type     => "multipart/mixed");
+    $workingentity = MIME::Entity->build(Type => $entity->head->mime_attr("Content-Type"));
     $workingentity->add_part($_) for ($entity->parts);
     $entity->parts([]);
     $entity->add_part($workingentity);
@@ -554,7 +568,6 @@ sub mime_sign {
   # this passes in the plaintext
   my $plaintext;
   if ($workingentity eq $entity) {
-#    $RT::Logger->crit("SINGLEPART");
     $plaintext = $entity->parts(0)->as_string;
   } else {
     $plaintext = $workingentity->as_string;
@@ -570,8 +583,8 @@ sub mime_sign {
   # DEBUG:
 #  print "SIGNING THIS STRING ----->\n";
 #  $plaintext =~ s/\n/-\n/gs;
-#  $RT::Logger->crit("SIGNING:\n$plaintext<<<");
-#  $RT::Logger->crit($entity->as_string);
+#  warn("SIGNING:\n$plaintext<<<");
+#  warn($entity->as_string);
 #  print STDERR $plaintext;
 #  print "<----\n";
   $input->flush();
@@ -588,8 +601,12 @@ sub mime_sign {
   close $error;
   close $status_fh;
 
-  waitpid $pid, 0;  # clean up the finished GnuPG process
-  my $exit_value  = $? >> 8;
+  waitpid $pid, 0;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
+
 
   $self->{last_message} = \@error_output;
 
@@ -601,6 +618,11 @@ sub mime_sign {
   $entity->head->mime_attr("Content-Type","multipart/signed");
   $entity->head->mime_attr("Content-Type.protocol","application/pgp-signature");
 #  $entity->head->mime_attr("Content-Type.micalg","pgp-md5");
+# Richard Hirner notes that Thunderbird/Enigmail really wants a micalg
+# of pgp-sha1 (which will be GPG version dependent.. older versions
+# used md5.  For now, until we can detect which type was used, the end
+# user should read the source code, notice this comment, and insert
+# the appropriate value themselves.
 
   return $exit_value;
 }
@@ -663,8 +685,11 @@ sub clear_sign {
   close $error;
 
   waitpid $pid, 0;
-  my $exit_value  = $? >> 8;
+  my $return = $?;
+   $return = 0 if $return == -1;
 
+  my $exit_value  = $return >> 8;
+  
   $self->{last_message} = [@error_output];
 
   my $io = $body->open ("w") or die "can't open entity body";
@@ -766,7 +791,11 @@ sub _ascii_encrypt {
   close $error;
 
   waitpid $pid, 0;
-  my $exit_value  = $? >> 8;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
+  
 
   $self->{last_message} = [@error_output];
 
@@ -828,7 +857,7 @@ sub _mime_encrypt {
   my $workingentity = $entity;
   $entity->make_multipart;
   if ($entity->parts > 1) {
-    $workingentity = MIME::Entity->build(Type     => "multipart/mixed");
+    $workingentity = MIME::Entity->build(Type => $entity->head->mime_attr("Content-Type"));
     $workingentity->add_part($_) for ($entity->parts);
     $entity->parts([]);
     $entity->add_part($workingentity);
@@ -891,7 +920,14 @@ sub _mime_encrypt {
   close $status_fh;
 
   waitpid $pid, 0;
-  my $exit_value  = $? >> 8;
+  my $return = $?;
+   $return = 0 if $return == -1;
+
+  my $exit_value  = $return >> 8;
+  
+
+  
+  
   $self->{last_message} = [@error_output];
 
 
