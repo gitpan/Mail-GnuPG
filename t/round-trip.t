@@ -17,12 +17,12 @@ unless ( 0 == system("gpg --version 2>&1 >/dev/null") ) {
 
 my $tmpdir = tempdir( "mgtXXXXX", CLEANUP => 1);
 
-unless ( 0 == system("gpg --homedir $tmpdir --import t/test-key.pgp 2>&1 >/dev/null")) {
+unless ( 0 == system("gpg --homedir $tmpdir --trusted-key 0x49539D60EFEA4EAD --import t/test-key.pgp 2>&1 >/dev/null")) {
   plan skip_all => "unable to import testing keys";
   goto end;
 }
 
-plan tests => 13;
+plan tests => 20;
 
 
 my $mg = new Mail::GnuPG( key => '49539D60EFEA4EAD',
@@ -31,12 +31,14 @@ my $mg = new Mail::GnuPG( key => '49539D60EFEA4EAD',
 
 isa_ok($mg,"Mail::GnuPG");
 
+my $line = "x\n";
+my $string = $line x 100000;
+
 my $copy;
 my $me =  MIME::Entity->build(From    => 'me@myhost.com',
 			      To      => 'you@yourhost.com',
 			      Subject => "Hello, nurse!",
-			      Data    => ["Line 1","Line 2"]);
-
+			      Data    => [$string]);
 # Test MIME Signing Round Trip
 
 $copy = $me->dup;
@@ -67,30 +69,18 @@ is( 0, $mg->is_encrypted($copy) );
 }
 # Test MIME Encryption Round Trip
 
-# hmm.. the encryption functions don't seem to be working right.
-# something about ...
-# gpg: 9FE08E94: There is no indication that this key really belongs to the owner
-# gpg: [stdin]: encryption failed: unusable public key
+$copy = $me->dup;
 
+is( 0, $mg->ascii_encrypt( $copy, $KEY ));
+is( 0, $mg->is_signed($copy) );
+is( 1, $mg->is_encrypted($copy) );
 
-# $copy = $me->dup;
+($verify,$key,$who) = $mg->decrypt($copy);
 
-# is( 0, $mg->ascii_encrypt( $copy, $KEY ));
-# warn @{$mg->{last_message}},"\n";
-# warn @{$mg->{plaintext}},"\n";
-# warn "hihi\n";
-# exit;
-# is( 0, $mg->is_signed($copy) );
-# is( 1, $mg->is_encrypted($copy) );
+is( 0, $verify );
+is( undef, $key );
+is( undef, $who );
 
-# my ($verify,$key,$who) = $mg->decrypt($copy);
-
-# is( 0, $verify );
-# is( undef, $key );
-# is( undef, $who );
-
-# is_deeply($mg->{decrypted},$me);
-
-
+is_deeply($mg->{decrypted}->body,$me->body);
 
 end:

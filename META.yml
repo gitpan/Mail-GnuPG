@@ -1,9 +1,11 @@
 --- #YAML:1.0
 name:                Mail-GnuPG
-version:             0.10
+version:             0.15
 abstract:            Process email with GPG.
 license:             ~
-generated_by:        ExtUtils::MakeMaker version 6.31
+author:              
+    - Robert Spier <rspier@cpan.org>
+generated_by:        ExtUtils::MakeMaker version 6.44
 distribution_type:   module
 requires:     
     File::Spec:                    0
@@ -15,7 +17,5 @@ requires:
     MIME::Parser:                  0
     Test::More:                    0
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.2.html
-    version: 1.2
-author:
-    - Robert Spier <rspier@cpan.org>
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
