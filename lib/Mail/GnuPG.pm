@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.15_1';
+our $VERSION = '0.15_2';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -140,9 +140,9 @@ sub decrypt {
 	m!application/pgp-encrypted!;
     $ciphertext = $message->parts(1)->stringify_body;
   }
-  elsif ($message->body_as_string
+  elsif ($message->bodyhandle->as_string
 	 =~ m!^-----BEGIN PGP MESSAGE-----!m ) {
-    $ciphertext = $message->body_as_string;
+    $ciphertext = $message->bodyhandle->as_string;
     $armor_message = 1;
   }
   else {
@@ -254,9 +254,9 @@ sub get_decrypt_key {
 	m!application/pgp-encrypted!;
     $ciphertext = $message->parts(1)->stringify_body;
   }
-  elsif ($message->body_as_string
+  elsif ($message->bodyhandle->as_string
 	 =~ m!^-----BEGIN PGP MESSAGE-----!m ) {
-    $ciphertext = $message->body_as_string;
+    $ciphertext = $message->bodyhandle->as_string;
   }
   else {
     die "Unknown Content-Type or no PGP message in body"
@@ -1095,6 +1095,8 @@ GNU General Public License or the Artistic License for more details.
 =head1 AUTHOR
 
 Robert Spier
+
+David Bremner <ddb@cpan.org>
 
 =head1 BUGS/ISSUES/PATCHES
 

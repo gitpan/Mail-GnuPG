@@ -1,0 +1,30 @@
+---
+name: Mail-GnuPG
+version: 0.15_2
+author:
+  - 'Robert Spier <rspier@cpan.org>'
+  - 'David Bremner <ddb@cpan.org>'
+abstract: Process email with GPG.
+license: unknown
+requires:
+  File::Spec: 0
+  File::Temp: 0
+  GnuPG::Interface: 0
+  IO::Handle: 0
+  MIME::Entity: 0
+  MIME::Parser: 0
+  Mail::Address: 0
+  Test::More: 0
+  Test::Pod: 0
+configure_requires:
+  Module::Build: 0.340201
+provides:
+  Mail::GnuPG:
+    file: lib/Mail/GnuPG.pm
+    version: 0.15_2
+generated_by: Module::Build version 0.340201
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+resources:
+  homepage: http://pivot.cs.unb.ca/git/?p=mail-gnupg.git;a=summary
