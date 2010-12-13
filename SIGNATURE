@@ -1,0 +1,46 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.63.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 2a0995e8f4ea107ac5740bb23f5602dc7b0216fa Build.PL
+SHA1 024283ff349d105ef19c197239cae466908392f0 Changes
+SHA1 ea50f715ac97c9d7226281eab038cb5c6799ea74 MANIFEST
+SHA1 c1f29361f6dbc2b19828078b652e8f8a9d052024 META.yml
+SHA1 4bd99b7839619d627ad16d69d09772d3ef2e7784 README
+SHA1 6ffb476883880732636f482c83a59d2653b24e72 lib/Mail/GnuPG.pm
+SHA1 3ec6171779122b0bdc69937c283be11b2a15dd89 t/00.signature.t
+SHA1 269c6c48fbe5fd830479e83b2d7aae8ddca00133 t/05.load.t
+SHA1 2679e880c6c9f225dc97c1d7a462d3e43e2834b1 t/20.inline-verify.t
+SHA1 22d2700f00f149941964d96cabbb7c87aa908bfb t/25.multipart-verify.t
+SHA1 7bf3a408b7c981e84ef94a252319874c2009e81a t/30.inline-decrypt.t
+SHA1 5a5966f563a4b6a4f7664c0b1251d3c1d2446c09 t/99.pod.t
+SHA1 c511c27d56aab293cd548ae2aee9159ff400a7be t/agent.t
+SHA1 782c0040382d4721f14f987a82e9ed34281e6781 t/base.t
+SHA1 bf8b4dbe41812f26f21eef4061a2e5444c3e7a52 t/import_keys.pl
+SHA1 42f5e5ec614ad6e44a0f91c8aee0554b48b8445a t/msg/inline-encrypted-qp.eml
+SHA1 ea32c1f860eea29382f65acedb3ba3cd4c0ed9d7 t/msg/inline-signed-qp.eml
+SHA1 59b756891362972b3aa98207750f0dbcce52c3ec t/msg/multipart-signed-qp.eml
+SHA1 943ef9409156fef12c810738bb81c4d381f557e4 t/pubkeys.asc
+SHA1 c63ed21ebdb1ec34d752747a674f3908a00557c4 t/round-trip.t
+SHA1 1932b1026feb122fedd16396d7cd069ba0330640 t/test-key.pgp
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iJwEAQECAAYFAk0GP58ACgkQTiiN/0Um85lI9gP/TOoKRFKtFarLlC+Ub2zRZFzJ
+kcR8wVBYYBL57XwehLt4f17R6LkZcT1bWNxMx0wDsbQe9q7Dm1rnU5wtyD5Oh6hc
+jRw/PzmvqoowXWdpw8r5zgVy11M2XHvDsgBUdn3zdyINV4rV4tmse5uCrEEvRA8a
+0xYvQNkz8QF/83VhV+o=
+=y/FR
+-----END PGP SIGNATURE-----

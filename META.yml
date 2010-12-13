@@ -1,6 +1,6 @@
 ---
 name: Mail-GnuPG
-version: 0.15_2
+version: 0.15_3
 author:
   - 'Robert Spier <rspier@cpan.org>'
   - 'David Bremner <ddb@cpan.org>'
@@ -21,7 +21,7 @@ configure_requires:
 provides:
   Mail::GnuPG:
     file: lib/Mail/GnuPG.pm
-    version: 0.15_2
+    version: 0.15_3
 generated_by: Module::Build version 0.340201
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
