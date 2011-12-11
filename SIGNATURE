@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.63.
+signed via the Module::Signature module, version 0.68.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -15,11 +15,12 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 2a0995e8f4ea107ac5740bb23f5602dc7b0216fa Build.PL
-SHA1 f1bda53ca196f81861276dc42f09f1dc1ce37d9d Changes
-SHA1 ea50f715ac97c9d7226281eab038cb5c6799ea74 MANIFEST
-SHA1 5e1ffe2332a237a16bf50ba7892d23899470ee1c META.yml
+SHA1 87689b3edeff732b512fde4010f07ee5dd24c39d Changes
+SHA1 4d1489804b98886354d27ff4a1a812c24e33bedc MANIFEST
+SHA1 c1df5d03e5dec2689cbce68039929c1dbe1da91b META.json
+SHA1 498ccd58146f427d89f6687f7f38637cd7854aa2 META.yml
 SHA1 4bd99b7839619d627ad16d69d09772d3ef2e7784 README
-SHA1 738cb24a829acc24fc147a9926d38eb3314c489f lib/Mail/GnuPG.pm
+SHA1 49c96605a183d9b68ca19913f20c70b7ea209e60 lib/Mail/GnuPG.pm
 SHA1 3ec6171779122b0bdc69937c283be11b2a15dd89 t/00.signature.t
 SHA1 269c6c48fbe5fd830479e83b2d7aae8ddca00133 t/05.load.t
 SHA1 2679e880c6c9f225dc97c1d7a462d3e43e2834b1 t/20.inline-verify.t
@@ -28,19 +29,19 @@ SHA1 7bf3a408b7c981e84ef94a252319874c2009e81a t/30.inline-decrypt.t
 SHA1 5a5966f563a4b6a4f7664c0b1251d3c1d2446c09 t/99.pod.t
 SHA1 c511c27d56aab293cd548ae2aee9159ff400a7be t/agent.t
 SHA1 782c0040382d4721f14f987a82e9ed34281e6781 t/base.t
-SHA1 bf8b4dbe41812f26f21eef4061a2e5444c3e7a52 t/import_keys.pl
+SHA1 58677c70dd194c09422dea0ad15ebfb9e3f04062 t/import_keys.pl
 SHA1 42f5e5ec614ad6e44a0f91c8aee0554b48b8445a t/msg/inline-encrypted-qp.eml
 SHA1 ea32c1f860eea29382f65acedb3ba3cd4c0ed9d7 t/msg/inline-signed-qp.eml
 SHA1 59b756891362972b3aa98207750f0dbcce52c3ec t/msg/multipart-signed-qp.eml
 SHA1 943ef9409156fef12c810738bb81c4d381f557e4 t/pubkeys.asc
-SHA1 c63ed21ebdb1ec34d752747a674f3908a00557c4 t/round-trip.t
+SHA1 5b89f061e6bb84e4fb73f36d737a36b4ad5fac7a t/round-trip.t
 SHA1 1932b1026feb122fedd16396d7cd069ba0330640 t/test-key.pgp
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-iJwEAQECAAYFAk0HVMUACgkQTiiN/0Um85k/1wP/YtouOK6X828Jz5LYw6C83nmR
-y/eXe8d4oRuTTnDL276ZyAjnKm1fnkIcuZ1Y5pxTvd314VBsXVXnYwN8lH1wWF3W
-VoUH+5GDeFfbs0IkmLdbJtHZB+5a3i7FWfFVw6JwgvcP0F3nIR/epm12v987pi8I
-gV29eiTmwZdsC87BdoI=
-=B23i
+iJwEAQECAAYFAk7kyM0ACgkQTiiN/0Um85kF+gP/ZPPLHxakAa1Kl2wmQzlO4wbJ
+5gGUFZkww0R+K4Utz/Cxndzdw1Hln5P3dytXhgs4XVSVvWe5vybh1v2u85zPj9xE
+E/tc9AntEQDCY7s0/+b0ak0LZ62zpHjqeEo+YnB8urCUdS2z/BH7q9jhSkoQLF/Z
+RHz0+Oii1JNoywUw8i0=
+=TDkg
 -----END PGP SIGNATURE-----

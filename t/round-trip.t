@@ -5,20 +5,16 @@ use File::Temp qw(tempdir);
 use Mail::GnuPG;
 use MIME::Entity;
 use strict;
-no warnings 'redefine';         # fix this later
 
-my $KEY = "EFEA4EAD"; # 49539D60EFEA4EAD
+my $FULL_KEY = "49539D60EFEA4EAD";
+my $KEY = substr($FULL_KEY,-8,8);
+
 my $WHO = "Mail::GnuPG Test Key <mail\@gnupg.dom>";
 
-unless ( 0 == system("gpg --version 2>&1 >/dev/null") ) {
-  plan skip_all => "gpg in path required for testing round-trip";
-  goto end;
-}
-
-my $tmpdir = tempdir( "mgtXXXXX", CLEANUP => 1);
-
-unless ( 0 == system("gpg --homedir $tmpdir --trusted-key 0x49539D60EFEA4EAD --import t/test-key.pgp 2>&1 >/dev/null")) {
-  plan skip_all => "unable to import testing keys";
+require('t/import_keys.pl');
+my $gpghome=import_keys('t/test-key.pgp',$FULL_KEY);
+unless (defined($gpghome)){
+  plan skip_all => "failed to import GPG keys for testing";
   goto end;
 }
 
@@ -26,7 +22,7 @@ plan tests => 20;
 
 
 my $mg = new Mail::GnuPG( key => '49539D60EFEA4EAD',
-			  keydir => $tmpdir,
+			  keydir => $gpghome,
 			  passphrase => 'passphrase');
 
 isa_ok($mg,"Mail::GnuPG");
@@ -43,21 +39,21 @@ my $me =  MIME::Entity->build(From    => 'me@myhost.com',
 
 $copy = $me->dup;
 
-is( 0, $mg->mime_sign( $copy ) );
+is( $mg->mime_sign( $copy ), 0 );
 
 my ($verify,$key,$who) = $mg->verify($copy);
-is( 0, $verify );
-is( $KEY, $key );
-is( $WHO, $who );
+is( $verify, 0 );
+is( $key, $KEY );
+is( $who, $WHO );
 
-is( 1, $mg->is_signed($copy) );
-is( 0, $mg->is_encrypted($copy) );
+is( $mg->is_signed($copy), 1 );
+is( $mg->is_encrypted($copy), 0 );
 
 # Test Clear Signing Round Trip
 
 $copy = $me->dup;
 
-is( 0, $mg->clear_sign( $copy ) );
+is( $mg->clear_sign( $copy ), 0 );
 
 { my ($verify,$key,$who) = $mg->verify($copy);
 is( 0, $verify );
@@ -71,15 +67,15 @@ is( 0, $mg->is_encrypted($copy) );
 
 $copy = $me->dup;
 
-is( 0, $mg->ascii_encrypt( $copy, $KEY ));
-is( 0, $mg->is_signed($copy) );
-is( 1, $mg->is_encrypted($copy) );
+is( $mg->ascii_encrypt( $copy, $KEY ), 0 );
+is( $mg->is_signed($copy), 0  );
+is( $mg->is_encrypted($copy), 1 );
 
 ($verify,$key,$who) = $mg->decrypt($copy);
 
-is( 0, $verify );
-is( undef, $key );
-is( undef, $who );
+is( $verify, 0 );
+is( $key, undef );
+is( $who, undef);
 
 is_deeply($mg->{decrypted}->body,$me->body);
 

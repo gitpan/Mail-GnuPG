@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -45,6 +45,7 @@ use Errno qw(EPIPE);
    keydir => gpg configuration/key directory
    passphrase => primary key password
    use_agent => use gpg-agent if non-zero
+   always_trust => always trust a public key
    # FIXME: we need more things here, maybe primary key id.
 
 
@@ -78,6 +79,10 @@ sub _set_options {
 #			      ( defined $self->{passphrase} ?
 #				( passphrase => $self->{passphrase} ) : () ),
 			    );
+
+  if (defined $self->{always_trust}) {
+    $gnupg->options->always_trust($self->{always_trust})
+  }
   $gnupg->call( $self->{gpg_path} ) if defined $self->{gpg_path};
 }
 
@@ -338,6 +343,12 @@ sub get_decrypt_key {
 
   The message can either be in RFC compliant-ish multipart/signed
   format, or just a single part ascii armored message.
+
+  Note that MIME-encoded data should be supplied unmodified inside
+  the MIME::Entity input message, otherwise the signature will be
+  broken. Since MIME-tools version 5.419, this can be achieved with
+  the C<decode_bodies> method of MIME::Parser. See the MIME::Parser
+  documentation for more information.
 
  Output:
   On error:
