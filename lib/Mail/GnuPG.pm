@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -476,14 +476,15 @@ sub _rebuild_key_cache {
   my $self = shift;
   local $_;
   %key_cache = ();
-  # sometimes the best tool for the job... is not perl
-  open(my $fh, "$self->{gpg_path} --list-public-keys --with-colons | cut -d: -f10|")
-    or die $!;
-  while(<$fh>) {
-    next unless $_;
-    # M::A may not parse the gpg stuff properly.  Cross fingers
-    my ($a) = Mail::Address->parse($_); # list context, please
-    $key_cache{$a->address}=1 if ref $a;
+  my $gnupg = GnuPG::Interface->new();
+  $self->_set_options($gnupg);
+  my @keys = $gnupg->get_public_keys();
+  foreach my $key (@keys) {
+    foreach my $uid ($key->user_ids) {
+      # M::A may not parse the gpg stuff properly.  Cross fingers
+      my ($a) = Mail::Address->parse($uid->as_string); # list context, please
+      $key_cache{$a->address}=1 if ref $a;
+    }
   }
 }
 

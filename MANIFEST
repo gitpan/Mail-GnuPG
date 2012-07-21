@@ -8,6 +8,7 @@ t/05.load.t
 t/20.inline-verify.t
 t/25.multipart-verify.t
 t/30.inline-decrypt.t
+t/35.has-public-key.t
 t/99.pod.t
 t/agent.t
 t/base.t

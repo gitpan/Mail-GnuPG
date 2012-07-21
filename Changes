@@ -1,5 +1,9 @@
 Revision history for Perl extension Mail::GnuPG.
 
+0.18 Sat Jul 21 2012
+
+  - [RT #77070] Support non-default GPG key directory
+
 0.17 Sun Dec 10 2011
 
   - [RT #73036] Support trust-model = always-trust

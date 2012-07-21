@@ -7,7 +7,7 @@ build_requires: {}
 configure_requires:
   Module::Build: 0.38
 dynamic_config: 1
-generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.112621'
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.120921'
 license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -16,7 +16,7 @@ name: Mail-GnuPG
 provides:
   Mail::GnuPG:
     file: lib/Mail/GnuPG.pm
-    version: 0.17
+    version: 0.18
 requires:
   File::Spec: 0
   File::Temp: 0
@@ -29,4 +29,4 @@ requires:
   Test::Pod: 0
 resources:
   homepage: http://pivot.cs.unb.ca/git/?p=mail-gnupg.git;a=summary
-version: 0.17
+version: 0.18
