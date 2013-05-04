@@ -1,5 +1,9 @@
 Revision history for Perl extension Mail::GnuPG.
 
+0.19 Sat May 4 2013
+
+  - [RT #83465] Update gnupg-agent support for GnuPG::Interface >= 0.46
+
 0.18 Sat Jul 21 2012
 
   - [RT #77070] Support non-default GPG key directory

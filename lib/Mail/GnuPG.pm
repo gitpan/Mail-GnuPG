@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -79,6 +79,9 @@ sub _set_options {
 #			      ( defined $self->{passphrase} ?
 #				( passphrase => $self->{passphrase} ) : () ),
 			    );
+  if ($self->{use_agent}) {
+    push @{$gnupg->options->extra_args}, '--use-agent';
+  }
 
   if (defined $self->{always_trust}) {
     $gnupg->options->always_trust($self->{always_trust})
@@ -119,11 +122,6 @@ sub _set_options {
   $self->{decrypted}    => parsed output as MIME::Entity
 
 =cut
-
-sub _agent_args{
-  my $self=shift;
-  return $self->{use_agent} ? ('command_args' => ['--use-agent']) : ();
-}
 
 sub decrypt {
   my ($self, $message) = @_;
@@ -172,7 +170,7 @@ sub decrypt {
 				   );
 
   # this sets up the communication
-  my $pid = $gnupg->decrypt( handles => $handles , $self->_agent_args );
+  my $pid = $gnupg->decrypt( handles => $handles );
 
   die "NO PASSPHRASE" unless defined $passphrase_fh;
   my $read = _communicate([$output, $error, $status_fh],
@@ -560,7 +558,7 @@ sub mime_sign {
 				     passphrase => $passphrase_fh,
 				     status     => $status_fh,
 				   );
-  my $pid = $gnupg->detach_sign( handles => $handles, $self->_agent_args );
+  my $pid = $gnupg->detach_sign( handles => $handles );
   die "NO PASSPHRASE" unless defined $passphrase_fh;
 
   # this passes in the plaintext
@@ -659,7 +657,7 @@ sub clear_sign {
 	stderr	=> $error,
   );
 
-  my $pid = $gnupg->clearsign ( handles => $handles, $self->_agent_args );
+  my $pid = $gnupg->clearsign ( handles => $handles );
 
   my $plaintext = $body->as_string;
 
@@ -762,7 +760,7 @@ sub _ascii_encrypt {
 
   my $pid = do {
   	if ( $sign ) {
-		$gnupg->sign_and_encrypt ( handles => $handles, $self->_agent_args );
+		$gnupg->sign_and_encrypt ( handles => $handles );
 	} else {
 		$gnupg->encrypt ( handles => $handles );
 	}
@@ -862,7 +860,7 @@ sub _mime_encrypt {
 
   my $pid = do {
     if ($sign) {
-      $gnupg->sign_and_encrypt( handles => $handles, $self->_agent_args );
+      $gnupg->sign_and_encrypt( handles => $handles );
     } else {
       $gnupg->encrypt( handles => $handles );
     }

@@ -16,7 +16,7 @@ name: Mail-GnuPG
 provides:
   Mail::GnuPG:
     file: lib/Mail/GnuPG.pm
-    version: 0.18
+    version: 0.19
 requires:
   File::Spec: 0
   File::Temp: 0
@@ -29,4 +29,4 @@ requires:
   Test::Pod: 0
 resources:
   homepage: http://pivot.cs.unb.ca/git/?p=mail-gnupg.git;a=summary
-version: 0.18
+version: 0.19
