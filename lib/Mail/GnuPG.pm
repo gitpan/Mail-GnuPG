@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -165,7 +165,7 @@ sub decrypt {
   my $handles = GnuPG::Handles->new( stdin      => $input,
 				     stdout     => $output,
 				     stderr     => $error,
-				     passphrase => $passphrase_fh,
+				     $self->{use_agent} ? () : (passphrase => $passphrase_fh),
 				     status     => $status_fh,
 				   );
 
@@ -174,9 +174,9 @@ sub decrypt {
 
   die "NO PASSPHRASE" unless defined $passphrase_fh;
   my $read = _communicate([$output, $error, $status_fh],
-                        [$input, $passphrase_fh],
+                        [$input, $self->{use_agent} ? () : $passphrase_fh],
                         { $input => $ciphertext,
-                          $passphrase_fh => $self->{passphrase}}
+                          $self->{use_agent} ? () : ($passphrase_fh => $self->{passphrase})}
              );
 
   my @plaintext    = split(/^/m, $read->{$output});
@@ -215,10 +215,8 @@ sub decrypt {
   # trust an unsigned encrypted message is from who it says signed it.
   # (Although I think it would have to go hand in hand at some point.)
 
-  # FIXME: these regex are likely to break under non english locales.
   my $result = join "", @error_output;
-  my ($keyid)  = $result =~ /using \S+ key ID (.+)$/m;
-  my ($pemail) = $result =~ /Good signature from "(.+)"$/m;
+  my ($keyid, $pemail) = key_and_uid_from_status(@status_info);
 
   return ($exit_value,$keyid,$pemail);
 
@@ -358,7 +356,8 @@ sub get_decrypt_key {
     )
 
    where the keyid is the key that signed it, and emailaddress is full
-   name and email address of the primary uid
+   name and email address of the primary uid. The email/uid is UTF8
+   encoded, as output by GPG.
 
   $self->{last_message} => any errors from gpg
 
@@ -405,7 +404,11 @@ sub verify {
   # how we create some handles to interact with GnuPG
   my $input   = IO::Handle->new();
   my $error   = IO::Handle->new();
-  my $handles = GnuPG::Handles->new( stderr => $error, stdin  => $input );
+  my $status_fh = IO::Handle->new();
+
+  my $handles = GnuPG::Handles->new( stderr => $error,
+				     stdin  => $input,
+				     status => $status_fh );
 
   my ($sigfh, $sigfile)
     = File::Temp::tempfile('mgsXXXXXXXX',
@@ -438,9 +441,10 @@ sub verify {
 					      "$sigfile" ),
 			  );
 
-  my $read = _communicate([$error], [$input], {$input => ''});
+  my $read = _communicate([$error,$status_fh], [$input], {$input => ''});
 
   my @result = split(/^/m, $read->{$error});
+  my @status_info  = split(/^/m, $read->{$status_fh});
 
   unlink $sigfile, $datafile;
 
@@ -454,14 +458,28 @@ sub verify {
 
   return $exit_value if $exit_value; # failure
 
-  # FIXME: these regex are likely to break under non english locales.
   my $result = join "", @result;
-  my ($keyid)  = $result =~ /using \S+ key ID (.+)$/m;
-  my ($pemail) = $result =~ /Good signature from "(.+)"$/m;
 
+  my ($keyid, $pemail) = key_and_uid_from_status(@status_info);
 
   return ($exit_value,$keyid,$pemail);
 
+}
+
+sub key_and_uid_from_status {
+
+  my @status_info = @_;
+
+  chomp(@status_info);
+
+  my ($keyid) = grep { s/^\[GNUPG:\] VALIDSIG \S+(\S{8}) .*$/$1/; } @status_info;
+
+  # FIXME: we should really distinguish between GOOD and the others
+  #        but this will change the existing behaviour
+
+  my ($pemail) = grep { s/^\[GNUPG:\] (GOODSIG|EXPKEYSIG|REVKEYSIG) \S+ (.*)$/$2/; } @status_info;
+
+  return ($keyid,$pemail);
 }
 
 # Should this go elsewhere?  The Key handling stuff doesn't seem to
@@ -555,7 +573,7 @@ sub mime_sign {
   my $handles = GnuPG::Handles->new( stdin      => $input,
 				     stdout     => $output,
 				     stderr     => $error,
-				     passphrase => $passphrase_fh,
+				     $self->{use_agent} ? () : (passphrase => $passphrase_fh),
 				     status     => $status_fh,
 				   );
   my $pid = $gnupg->detach_sign( handles => $handles );
@@ -581,9 +599,9 @@ sub mime_sign {
 #  print STDERR $plaintext;
 #  print "<----\n";
   my $read = _communicate([$output, $error, $status_fh],
-                        [$input, $passphrase_fh],
+                        [$input, $self->{use_agent} ? () : ($passphrase_fh)],
                         { $input => $plaintext,
-                          $passphrase_fh => $self->{passphrase}}
+                          $self->{use_agent} ? () : ($passphrase_fh => $self->{passphrase})}
              );
 
   my @signature  = split(/^/m, $read->{$output});
@@ -854,7 +872,7 @@ sub _mime_encrypt {
   my $handles = GnuPG::Handles->new( stdin      => $input,
 				     stdout     => $output,
 				     stderr     => $error,
-				     passphrase => $passphrase_fh,
+				     $self->{use_agent} ? () : (passphrase => $passphrase_fh),
 				     status     => $status_fh,
 				   );
 
@@ -885,9 +903,9 @@ sub _mime_encrypt {
 
   die "NO PASSPHRASE" unless defined $passphrase_fh;
   my $read = _communicate([$output, $error, $status_fh],
-                        [$input, $passphrase_fh],
+                        [$input, $self->{use_agent} ? () : ($passphrase_fh)],
                         { $input => $plaintext,
-                          $passphrase_fh => $self->{passphrase}}
+                          $self->{use_agent} ? () : ($passphrase_fh => $self->{passphrase})}
              );
 
   my @plaintext    = split(/^/m, $read->{$output});

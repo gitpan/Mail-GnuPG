@@ -5,28 +5,28 @@ author:
   - 'David Bremner <ddb@cpan.org>'
 build_requires: {}
 configure_requires:
-  Module::Build: 0.38
+  Module::Build: '0.40'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.141520'
 license: unknown
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Mail-GnuPG
 provides:
   Mail::GnuPG:
     file: lib/Mail/GnuPG.pm
-    version: 0.19
+    version: '0.20'
 requires:
-  File::Spec: 0
-  File::Temp: 0
-  GnuPG::Interface: 0
-  IO::Handle: 0
-  MIME::Entity: 0
-  MIME::Parser: 0
-  Mail::Address: 0
-  Test::More: 0
-  Test::Pod: 0
+  File::Spec: '0'
+  File::Temp: '0'
+  GnuPG::Interface: '0'
+  IO::Handle: '0'
+  MIME::Entity: '0'
+  MIME::Parser: '0'
+  Mail::Address: '0'
+  Test::More: '0'
+  Test::Pod: '0'
 resources:
   homepage: http://pivot.cs.unb.ca/git/?p=mail-gnupg.git;a=summary
-version: 0.19
+version: '0.20'

@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.68.
+signed via the Module::Signature module, version 0.73.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -12,15 +12,15 @@ the distribution may already have been compromised, and you should
 not run its Makefile.PL or Build.PL.
 
 -----BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Hash: SHA256
 
 SHA1 2a0995e8f4ea107ac5740bb23f5602dc7b0216fa Build.PL
-SHA1 ef2347ad3e322e66476cf627bcf1e42ba7d4f36e Changes
+SHA1 48f3d4f28b869ce07330abd656d9d2a188ecbed0 Changes
 SHA1 715f00c27841c9e55587f86856b7dab59799a830 MANIFEST
-SHA1 31e74441f34fb0847f306d134b765334ca85a294 META.json
-SHA1 8d9f105187afe48498093e67e1071488e02b0ace META.yml
+SHA1 145cbea49198611db13aa6fc8f5fb35096954beb META.json
+SHA1 4c78f101a39862d2f98b3c4d4dacd59f3dbb9454 META.yml
 SHA1 4bd99b7839619d627ad16d69d09772d3ef2e7784 README
-SHA1 95885d81413712ab28f4d15e1a8d585e7badba6e lib/Mail/GnuPG.pm
+SHA1 2997e77c50056d598360171d0ae7bd78e74da9e7 lib/Mail/GnuPG.pm
 SHA1 3ec6171779122b0bdc69937c283be11b2a15dd89 t/00.signature.t
 SHA1 269c6c48fbe5fd830479e83b2d7aae8ddca00133 t/05.load.t
 SHA1 2679e880c6c9f225dc97c1d7a462d3e43e2834b1 t/20.inline-verify.t
@@ -28,21 +28,26 @@ SHA1 22d2700f00f149941964d96cabbb7c87aa908bfb t/25.multipart-verify.t
 SHA1 7bf3a408b7c981e84ef94a252319874c2009e81a t/30.inline-decrypt.t
 SHA1 27b2a825bb10243ff3db6fbc0ed46397993bb510 t/35.has-public-key.t
 SHA1 5a5966f563a4b6a4f7664c0b1251d3c1d2446c09 t/99.pod.t
-SHA1 c511c27d56aab293cd548ae2aee9159ff400a7be t/agent.t
+SHA1 d2f3831a839403d1872fdeb298a3312c26b0e0f3 t/agent.t
 SHA1 782c0040382d4721f14f987a82e9ed34281e6781 t/base.t
 SHA1 58677c70dd194c09422dea0ad15ebfb9e3f04062 t/import_keys.pl
 SHA1 42f5e5ec614ad6e44a0f91c8aee0554b48b8445a t/msg/inline-encrypted-qp.eml
 SHA1 ea32c1f860eea29382f65acedb3ba3cd4c0ed9d7 t/msg/inline-signed-qp.eml
 SHA1 59b756891362972b3aa98207750f0dbcce52c3ec t/msg/multipart-signed-qp.eml
-SHA1 943ef9409156fef12c810738bb81c4d381f557e4 t/pubkeys.asc
+SHA1 94727af5fd3e3f8823afbc690df01b054f114185 t/pubkeys.asc
 SHA1 5b89f061e6bb84e4fb73f36d737a36b4ad5fac7a t/round-trip.t
 SHA1 1932b1026feb122fedd16396d7cd069ba0330640 t/test-key.pgp
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v1
 
-iJwEAQECAAYFAlGE8L0ACgkQTiiN/0Um85ntxwP/WNRxl1NOco+86d/3AMibj0gU
-GGTqUPf88oqyzmFYN3pUFMDdybUbZ3zKBC8ot1rQG7nBjOG/EzwkBUC2ifKsSgcZ
-qEEuUejVUfrlFi60boh2gKmt6cGhYxrv6UOCoStvpttX0vn49w0ug391hOhRzIna
-ckmWuAFyMPwE9ywVHso=
-=B9b9
+iQGcBAEBCAAGBQJT13QdAAoJEPIClx2kp54sZPgL/3dv7kHdW1QEtHKJJiZRUYbW
++A86PfjanUZ8CouTsPutnzwUpspxWxq7uNjkSzHCsH/EjJZULIa+f4fLC+f90bO3
+/UbBBuiPBg/Vh+f2R2v9w/nxdnBh+MkFGmIdB1iAYtek+vXxAQ7uo2GNsq2KY1gF
+M78rVDBEfWKiokWGyPIkvzDSJrDk7u7x7fOzKw3lnXHfxGcL6rnvM/h30zIsF7g2
+trFTPPSCMeW2y+4btNB57oNXuYV22yIPuHoBIOmiE7dCkafcz1jfzgNvFvX8DkN2
+ubx1I6hjdcscxH2ZnRuZSBSmTFsXuGOWX+XPYw4NBmF8Zmt5mSg3yPIKHKiCY01W
+Pt9s54f0+V3JKjSTgqsNoC/0KT1BP74B588rVqXzlnehjI8M/Yy7Ov4T4u/52U9d
+m1iSSEa1PL6DJBD178/2O84KtRJcxT+8IHyFjhnVxudI7FbxawHh+NqVrKjd7Osm
+dD8NAmbbJLQdItS/d4mu3J7HEAaolrdbYfYz/pRTvw==
+=Sb1e
 -----END PGP SIGNATURE-----

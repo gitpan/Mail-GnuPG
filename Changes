@@ -1,5 +1,10 @@
 Revision history for Perl extension Mail::GnuPG.
 
+0.20 Mon Jul 28 2014
+
+  - [RT #97283] Bugfixes for gnupg-agent support
+  - Replacing parsing of stderr with use of status-fd
+
 0.19 Sat May 4 2013
 
   - [RT #83465] Update gnupg-agent support for GnuPG::Interface >= 0.46

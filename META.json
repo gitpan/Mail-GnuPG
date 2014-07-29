@@ -5,7 +5,7 @@
       "David Bremner <ddb@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.141520",
    "license" : [
       "unknown"
    ],
@@ -17,7 +17,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build" : "0.40"
          }
       },
       "runtime" : {
@@ -37,12 +37,12 @@
    "provides" : {
       "Mail::GnuPG" : {
          "file" : "lib/Mail/GnuPG.pm",
-         "version" : "0.19"
+         "version" : "0.20"
       }
    },
    "release_status" : "stable",
    "resources" : {
       "homepage" : "http://pivot.cs.unb.ca/git/?p=mail-gnupg.git;a=summary"
    },
-   "version" : "0.19"
+   "version" : "0.20"
 }
