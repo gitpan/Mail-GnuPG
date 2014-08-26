@@ -21,7 +21,7 @@ use 5.006;
 use strict;
 use warnings;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 my $DEBUG = 0;
 
 use GnuPG::Interface;
@@ -264,6 +264,9 @@ sub get_decrypt_key {
   }
 
   my $gnupg = GnuPG::Interface->new();
+  $gnupg->options->batch(1);
+  $gnupg->options->status_fd(1);
+  push @{$gnupg->options->extra_args}, '--list-only';
 
   # how we create some handles to interact with GnuPG
   # This time we'll catch the standard error for our perusing
@@ -281,7 +284,7 @@ sub get_decrypt_key {
   my $pid = $gnupg->wrap_call(
   	handles      => $handles,
   	commands     => [ "--decrypt" ],
-	command_args => [ "--batch", "--list-only", "--status-fd", "1" ],
+	command_args => [ ],
   );
 
   my $read = _communicate([$output], [$input], { $input => $ciphertext });

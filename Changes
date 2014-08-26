@@ -1,5 +1,9 @@
 Revision history for Perl extension Mail::GnuPG.
 
+0.21 Tue Aug 26 2014
+
+  - update get_decrypt_key to work with GnuPG::Interface >> 0.50
+
 0.20 Mon Jul 28 2014
 
   - [RT #97283] Bugfixes for gnupg-agent support
